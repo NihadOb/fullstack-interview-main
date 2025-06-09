@@ -21,6 +21,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     let message = '';
     let httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+    let details: string[] = [];
     if (exception instanceof HttpException) {
       httpStatus = exception.getStatus();
       const response = exception.getResponse();
@@ -32,6 +33,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
           if (responseMessages) {
             if (Array.isArray(responseMessages)) {
               message = responseMessages.join(', ');
+              details = responseMessages;
             } else if (typeof responseMessages === 'string') {
               message = responseMessages;
             }
@@ -40,7 +42,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       }
     }
 
-    const responseBody = new ErrorResponseDto('Internal Server Error', message);
+    const responseBody = new ErrorResponseDto(
+      'Internal Server Error',
+      message,
+      details,
+    );
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }
 }

@@ -8,6 +8,7 @@ import { MembershipHelperService } from './membership-helper.service';
 import { CustomLoggerService } from 'src/core/logger/custom-logger.service';
 import { MembershipPeriodState } from '../types/membership-period-state.enum';
 import { CreateMembershipRequestDto } from '../dtos';
+import { MembershipTypeRepository } from '../repositories/membership-type.repository';
 
 export interface CreateMembershipResult {
   membership: Membership;
@@ -24,6 +25,7 @@ export class MembershipService {
   constructor(
     private readonly membershipRepository: MembershipRepository,
     private readonly membershipPeriodRepository: MembershipPeriodRepository,
+    private readonly membershipTypeRepository: MembershipTypeRepository,
     private readonly membershipHelperService: MembershipHelperService,
     private readonly logger: CustomLoggerService,
   ) {}
@@ -158,5 +160,18 @@ export class MembershipService {
       periodStart = validUntil;
     }
     return membershipPeriods;
+  }
+
+  /**
+   * Validate membership type name
+   * @param membershipType Membership type to validate
+   */
+  async isValidMembershipType(membershipTypeName: string): Promise<boolean> {
+    //Todo move to separate service
+    return (
+      (await this.membershipTypeRepository.findAll()).find(
+        (_) => _.name === membershipTypeName,
+      ) != null
+    );
   }
 }

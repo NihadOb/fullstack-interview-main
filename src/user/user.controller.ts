@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
 import { UserService } from './services/user.service';
 import UserDto from './dtos/user.dto';
 import { toDtos } from 'src/core/helpers/transform.helper';
@@ -7,7 +7,10 @@ import { ApiOkResponse } from '@nestjs/swagger';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('User')
-@Controller('users')
+@Controller({
+  version: ['1'],
+  path: 'users',
+})
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -17,7 +20,7 @@ export class UserController {
     description: 'List of all Users',
   })
   @Get()
-  async getAllUsers(): Promise<UserDto[]> {
+  async getAllUserV1(): Promise<UserDto[]> {
     const usersWithRole = await this.userService.getAllUsers();
     if (!usersWithRole || usersWithRole.length === 0) {
       return [];

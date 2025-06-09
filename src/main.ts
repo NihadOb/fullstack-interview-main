@@ -1,13 +1,17 @@
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { CustomLoggerService } from './core/logger/custom-logger.service';
 import { GlobalExceptionFilter } from './core/filters/gloabl-exception.filter';
+import { useContainer } from 'class-validator';
+import { VERSION_METADATA } from '@nestjs/common/constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -15,13 +19,13 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: VERSION_METADATA,
+  });
   const logger = app.get(CustomLoggerService);
   logger.setContext('Bootstrap');
-  const config = new DocumentBuilder()
-    .setTitle('Membership API')
-    .setVersion('1.0')
-    .addTag('membership', 'membership management')
-    .build();
+  const config = new DocumentBuilder().setTitle('Membership API').build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, documentFactory, {

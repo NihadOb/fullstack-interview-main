@@ -7,6 +7,7 @@ import {
   IsOptional,
   Max,
   Min,
+  Validate,
 } from 'class-validator';
 import { BillingInterval } from '../types/billing-interval.enum';
 import { PaymentMethod } from '../types/payment-method.enum';
@@ -18,6 +19,7 @@ import {
 } from '../consts/error-messages.const';
 import { CashPriceBelowLimit } from '../validators/cash-price-below-limit.validator';
 import { BillingPeriodsValidator } from '../validators/billing-periods.validator';
+import { MembershipTypeValidator } from '../validators/membership-type.validator';
 
 export class CreateMembershipRequestDto {
   /**
@@ -27,6 +29,7 @@ export class CreateMembershipRequestDto {
   @IsDefined({
     message: MISSING_MANDATORY_FIELDS,
   })
+  @Validate(MembershipTypeValidator)
   name: string;
 
   /**
