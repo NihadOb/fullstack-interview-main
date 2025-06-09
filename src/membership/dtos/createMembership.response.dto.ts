@@ -7,7 +7,7 @@ export class CreateMembershipResponseDto {
    * New Membership
    */
   @Expose()
-  @Type(() => MembershipPeriodDto)
+  @Type(() => MembershipDto)
   membership: MembershipDto;
 
   /**

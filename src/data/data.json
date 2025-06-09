@@ -1,5 +1,5 @@
 {
-  "membershipPeriod": [
+  "membershipPeriods": [
     {
       "id": 1,
       "uuid": "123e4567-e89b-12d3-a456-426614174000",
@@ -25,13 +25,13 @@
       "state": "issued"
     }
   ],
-  "membership": [
+  "memberships": [
     {
       "id": 1,
       "uuid": "123e4567-e89b-12d3-a456-426614174000",
       "name": "Platinum Plan",
       "userId": 2000,
-      "recurringPrice": 150.0,
+      "recurringPrice": 150,
       "validFrom": "2023-01-01",
       "validUntil": "2023-12-31",
       "state": "active",
@@ -45,7 +45,7 @@
       "uuid": "123e4567-e89b-12d3-a456-426614174001",
       "name": "Gold Plan",
       "userId": 2000,
-      "recurringPrice": 100.0,
+      "recurringPrice": 100,
       "validFrom": "2023-02-01",
       "validUntil": "2023-12-31",
       "state": "active",
@@ -59,7 +59,7 @@
       "uuid": "123e4567-e89b-12d3-a456-426614174002",
       "name": "Gold Plan",
       "userId": 2000,
-      "recurringPrice": 100.0,
+      "recurringPrice": 100,
       "validFrom": "2023-02-01",
       "validUntil": "2023-12-31",
       "state": "active",
@@ -67,6 +67,30 @@
       "paymentMethod": null,
       "billingInterval": "monthly",
       "billingPeriods": 6
+    }
+  ],
+  "roles": [
+    {
+      "id": 1,
+      "uuid": "666e4567-e89b-12d3-a456-426614174111",
+      "name": "Admin",
+      "description": "Administrator with full access",
+      "createdAt": "2023-02-01",
+      "updatedAt": "2023-02-01"
+    }
+  ],
+  "users": [
+    {
+      "id": 2000,
+      "uuid": "666e4567-e89b-12d3-a456-426614174000",
+      "name": "Admin",
+      "username": "admin",
+      "email": "admin@test.com",
+      "firstName": "Nihad",
+      "lastName": "Obarcanin",
+      "createdAt": "2023-02-01",
+      "updatedAt": "2023-02-01",
+      "roleId": 1
     }
   ]
 }

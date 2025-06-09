@@ -7,6 +7,7 @@ import { MembershipPeriod } from '../entities/membership-period.interface';
 import { MembershipHelperService } from './membership-helper.service';
 import { CustomLoggerService } from 'src/core/logger/custom-logger.service';
 import { MembershipPeriodState } from '../types/membership-period-state.enum';
+import { CreateMembershipRequestDto } from '../dtos';
 
 export interface CreateMembershipResult {
   membership: Membership;
@@ -20,7 +21,6 @@ export interface FindAllResultItem {
 
 @Injectable()
 export class MembershipService {
-  private userId = 2000;
   constructor(
     private readonly membershipRepository: MembershipRepository,
     private readonly membershipPeriodRepository: MembershipPeriodRepository,
@@ -57,21 +57,39 @@ export class MembershipService {
 
   /**
    * Create new Membership and its periods.
+   * @param currentUserId Current User Id
    * @param membership Membership object to be created
    * @returns new Membership object
    */
-  async create(membership: Membership): Promise<CreateMembershipResult> {
+  async create(
+    currentUserId: number,
+    membership: CreateMembershipRequestDto,
+  ): Promise<CreateMembershipResult> {
     try {
       this.logger.log('Creating a new Membership.');
-      const newMembership = this.buildMembership(membership);
-      const newMembershipPeriods = this.buildMembershipPeriods(newMembership);
+      const newMembershipToInsert = this.buildMembership(
+        currentUserId,
+        membership,
+      );
+      const newMembershipPeriodsToInsert = this.buildMembershipPeriods(
+        newMembershipToInsert,
+      );
 
       //Todo: Wrap in transaction
-      await this.membershipRepository.create(newMembership);
-      await this.membershipPeriodRepository.createMany(newMembershipPeriods);
+      const savedMembership = await this.membershipRepository.create(
+        newMembershipToInsert,
+      );
+      console.log('Saved', savedMembership);
+      newMembershipPeriodsToInsert.forEach(
+        (_) => (_.membership = savedMembership.id),
+      );
+      const savedMembershipPeriods =
+        await this.membershipPeriodRepository.createMany(
+          newMembershipPeriodsToInsert,
+        );
       return {
-        membership: newMembership,
-        membershipPeriods: newMembershipPeriods,
+        membership: savedMembership,
+        membershipPeriods: savedMembershipPeriods,
       };
     } catch (error) {
       this.logger.error('Error creating new Membership:', error, membership);
@@ -82,25 +100,33 @@ export class MembershipService {
   /**
    *  Creates a new membership object with calculated fields.
    */
-  protected buildMembership(newMembership: Membership) {
-    const validFrom = newMembership.validFrom
-      ? new Date(newMembership.validFrom)
+  protected buildMembership(
+    currentUserId: number,
+    createMembership: CreateMembershipRequestDto,
+  ): Membership {
+    const validFrom = createMembership.validFrom
+      ? new Date(createMembership.validFrom)
       : new Date();
     const validUntil =
       this.membershipHelperService.calculateValidUntilForMembership(
         validFrom,
-        newMembership.billingInterval,
-        newMembership.billingPeriods,
+        createMembership.billingInterval,
+        createMembership.billingPeriods,
       );
-
-    newMembership.state = this.membershipHelperService.calculateMembershipState(
+    const state = this.membershipHelperService.calculateMembershipState(
       validFrom,
       validUntil,
     );
-    newMembership.validFrom = validFrom;
-    newMembership.validUntil = validUntil;
-    newMembership.user = this.userId;
-    newMembership.uuid = uuidv4();
+    const newMembership: Membership = {
+      id: -1,
+      uuid: uuidv4(),
+      ...createMembership,
+      validFrom: validFrom,
+      validUntil: validUntil,
+      user: currentUserId,
+      state,
+    };
+
     return newMembership;
   }
 

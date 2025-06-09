@@ -1,51 +1,100 @@
-import { IsEnum } from 'class-validator';
+import {
+  IsDate,
+  IsDefined,
+  IsEnum,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  Max,
+  Min,
+} from 'class-validator';
 import { BillingInterval } from '../types/billing-interval.enum';
-import { MembershipState } from '../types/membership-state.enum';
+import { PaymentMethod } from '../types/payment-method.enum';
+import { Type } from 'class-transformer';
+import {
+  INVALID_BILLING_PERIODS,
+  MISSING_MANDATORY_FIELDS,
+  NEGATIVE_RECURRING_PRICE,
+} from '../consts/error-messages.const';
+import { CashPriceBelowLimit } from '../validators/cash-price-below-limit.validator';
+import { BillingPeriodsValidator } from '../validators/billing-periods.validator';
 
 export class CreateMembershipRequestDto {
   /**
    *  name of the membership
+   *  @example "Gold Plan"
    */
+  @IsDefined({
+    message: MISSING_MANDATORY_FIELDS,
+  })
   name: string;
 
   /**
-   * the user that the membership is assigned to
-   */
-  user: number;
-
-  /*
    * price the user has to pay for every period
+   * @example 2
    */
+  @IsDefined({
+    message: MISSING_MANDATORY_FIELDS,
+  })
+  @Type(() => Number)
+  @IsNumber(
+    {
+      allowNaN: false,
+    },
+    {
+      message: 'MISSING_MANDATORY_FIELDS1',
+    },
+  )
+  @Min(0, {
+    message: NEGATIVE_RECURRING_PRICE,
+  })
+  @CashPriceBelowLimit()
   recurringPrice: number;
 
   /**
    * start of the validity
+   * @example 2025-02-24
    */
-  validFrom: Date;
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  validFrom?: Date;
 
-  /**
-   * end of the validity
-   */
-  validUntil: Date;
-
-  /**
-   * indicates the state of the membership
-   */
-  @IsEnum(MembershipState)
-  state: MembershipState;
   /**
    * which payment method will be used to pay for the periods
    */
+  @IsOptional()
+  @IsEnum(PaymentMethod)
+  paymentMethod?: PaymentMethod;
 
-  paymentMethod: string;
   /**
    * the interval unit of the periods
    */
+  @IsDefined({
+    message: INVALID_BILLING_PERIODS,
+  })
+  @IsEnum(BillingInterval, {
+    message: INVALID_BILLING_PERIODS,
+  })
   billingInterval: BillingInterval;
 
   /**
    * the number of periods the membership has
+   * @example 3
    */
-
+  @IsDefined()
+  @Type(() => Number)
+  @IsNumber(
+    {
+      allowNaN: false,
+    },
+    {
+      message: INVALID_BILLING_PERIODS,
+    },
+  )
+  @IsInt({
+    message: INVALID_BILLING_PERIODS,
+  })
+  @BillingPeriodsValidator()
   billingPeriods: number;
 }

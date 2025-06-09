@@ -1,12 +1,12 @@
 import { DataProvider } from 'src/core/database/data-provider.interface';
-import { Membership } from '../entities/membership.interface';
 import { BaseRepository } from 'src/core/database/base.repository';
 import { Inject, Injectable } from '@nestjs/common';
 import { DATA_PROVIDER_TOKEN } from 'src/core/constants/tokens';
+import Role from '../entities/role.interface';
 
 @Injectable()
-export class MembershipRepository extends BaseRepository<Membership> {
+export class RoleRepository extends BaseRepository<Role> {
   constructor(@Inject(DATA_PROVIDER_TOKEN) dataProvider: DataProvider) {
-    super('memberships', dataProvider);
+    super('roles', dataProvider);
   }
 }

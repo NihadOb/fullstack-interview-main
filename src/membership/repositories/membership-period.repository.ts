@@ -7,7 +7,7 @@ import { MembershipPeriod } from '../entities/membership-period.interface';
 @Injectable()
 export class MembershipPeriodRepository extends BaseRepository<MembershipPeriod> {
   constructor(@Inject(DATA_PROVIDER_TOKEN) dataProvider: DataProvider) {
-    super('membershipPeriod', dataProvider);
+    super('membershipPeriods', dataProvider);
   }
 
   /**
