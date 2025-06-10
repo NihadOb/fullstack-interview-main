@@ -6,7 +6,7 @@ import {
   BILLING_PERIODS_MORE_THAN_TWELVE_MONTHS,
   INVALID_BILLING_PERIODS,
 } from '../consts/error-messages.const';
-import { BillingInterval } from '../types/billing-interval.enum';
+import { BillingInterval } from '../enums/billing-interval.enum';
 
 export function validateBillingPeriods(
   billingInterval: BillingInterval,

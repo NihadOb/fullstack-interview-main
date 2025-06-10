@@ -1,5 +1,5 @@
 import { DataProvider } from '../data-provider.interface';
-import { CustomLoggerService } from 'src/core/logger/custom-logger.service';
+import { CustomLoggerService } from '@app/core/logger/custom-logger.service';
 
 export class PostgresDataProvider implements DataProvider {
   constructor(private readonly logger: CustomLoggerService) {

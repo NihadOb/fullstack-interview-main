@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { DataProvider } from '../data-provider.interface';
-import { CustomLoggerService } from 'src/core/logger/custom-logger.service';
+import { CustomLoggerService } from '@app/core/logger/custom-logger.service';
 
 interface JsonDb {
   [entityName: string]: any[];

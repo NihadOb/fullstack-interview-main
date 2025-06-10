@@ -1,5 +1,4 @@
-import { JsonDataProvider } from './json-data.provider';
-import * as fs from 'fs/promises';
+import { MemoryDataProvider, MemoryDb } from './memory-data.provider';
 
 const mockLogger = {
   log: jest.fn(),
@@ -7,33 +6,19 @@ const mockLogger = {
   error: jest.fn(),
 };
 
-const mockConfigService = {
-  get: jest.fn().mockReturnValue('./test.json'),
-};
-
-jest.mock('fs/promises', () => ({
-  readFile: jest.fn(),
-  writeFile: jest.fn(),
-  mkdir: jest.fn(),
-}));
-
-describe('JsonDataProvider', () => {
-  let provider: JsonDataProvider;
+describe('MemoryDataProvider', () => {
+  let provider: MemoryDataProvider;
+  let db: MemoryDb;
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    provider = new JsonDataProvider(
-      mockConfigService as any,
-      mockLogger as any,
-    );
-    // Simulate initialized state for most tests
-    (provider as any).isInitialized = true;
-    (provider as any).database = {
+    db = {
       testEntity: [
         { id: 1, name: 'A' },
         { id: 2, name: 'B' },
       ],
     };
+    provider = new MemoryDataProvider(mockLogger as any, db);
+    jest.clearAllMocks();
   });
 
   describe('findAll', () => {
@@ -64,34 +49,24 @@ describe('JsonDataProvider', () => {
   });
 
   describe('create', () => {
-    it('should add a new item and save the database', async () => {
-      (provider as any).database = { testEntity: [{ id: 1, name: 'A' }] };
-      (fs.writeFile as jest.Mock).mockResolvedValue(undefined);
-
+    it('should add a new item with next id', async () => {
       const result = await provider.create('testEntity', { name: 'C' });
-      expect(result).toMatchObject({ id: 2, name: 'C' });
-      expect((provider as any).database.testEntity.length).toBe(2);
-      expect(fs.writeFile).toHaveBeenCalled();
+      expect(result).toMatchObject({ id: 3, name: 'C' });
+      expect(db.testEntity.length).toBe(3);
     });
 
     it('should create entity array if not exists', async () => {
-      (provider as any).database = {};
-      (fs.writeFile as jest.Mock).mockResolvedValue(undefined);
-
       const result = await provider.create('newEntity', { foo: 'bar' });
       expect(result).toMatchObject({ id: 1, foo: 'bar' });
-      expect((provider as any).database.newEntity.length).toBe(1);
-      expect(fs.writeFile).toHaveBeenCalled();
+      expect(db.newEntity.length).toBe(1);
     });
   });
 
   describe('update', () => {
-    it('should update an existing item and save the database', async () => {
-      (fs.writeFile as jest.Mock).mockResolvedValue(undefined);
-
+    it('should update an existing item', async () => {
       const result = await provider.update('testEntity', 1, { name: 'Z' });
       expect(result).toMatchObject({ id: 1, name: 'Z' });
-      expect(fs.writeFile).toHaveBeenCalled();
+      expect(db.testEntity[0].name).toBe('Z');
     });
 
     it('should return null if item not found', async () => {
@@ -101,13 +76,11 @@ describe('JsonDataProvider', () => {
   });
 
   describe('delete', () => {
-    it('should remove an item and save the database', async () => {
-      (fs.writeFile as jest.Mock).mockResolvedValue(undefined);
-
+    it('should remove an item', async () => {
       const result = await provider.delete('testEntity', 1);
       expect(result).toBe(true);
-      expect((provider as any).database.testEntity.length).toBe(1);
-      expect(fs.writeFile).toHaveBeenCalled();
+      expect(db.testEntity.length).toBe(1);
+      expect(db.testEntity[0].id).toBe(2);
     });
 
     it('should return false if item not found', async () => {
@@ -118,15 +91,14 @@ describe('JsonDataProvider', () => {
 
   describe('getNextId', () => {
     it('should return 1 if no items', () => {
-      (provider as any).database = {};
-      const id = (provider as any).getNextId('emptyEntity');
-      expect(id).toBe(1);
+      const emptyProvider = new MemoryDataProvider(mockLogger as any, {});
+      // @ts-ignore
+      expect(emptyProvider['getNextId']('emptyEntity')).toBe(1);
     });
 
     it('should return max id + 1', () => {
-      (provider as any).database = { testEntity: [{ id: 3 }, { id: 7 }] };
-      const id = (provider as any).getNextId('testEntity');
-      expect(id).toBe(8);
+      // @ts-ignore
+      expect(provider['getNextId']('testEntity')).toBe(3);
     });
   });
 });

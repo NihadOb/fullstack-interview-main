@@ -1,6 +1,6 @@
 import { Expose, Transform } from 'class-transformer';
-import { MembershipPeriodState } from '../types/membership-period-state.enum';
-import { TransformDate } from 'src/core/decorators/transform-date.decorator';
+import { MembershipPeriodState } from '../enums/membership-period-state.enum';
+import { TransformDate } from '@app/core/decorators/transform-date.decorator';
 
 export class MembershipPeriodDto {
   /** Unique identifier for the membership period for db reference

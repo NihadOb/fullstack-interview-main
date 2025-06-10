@@ -1,0 +1,107 @@
+import { MemoryDb } from '@app/core/database/providers/memory-data.provider';
+
+export const date = new Date();
+export const data: MemoryDb = {
+  membershipPeriods: [
+    {
+      id: 1,
+      uuid: '123e4567-e89b-12d3-a456-426614174000',
+      membership: 1,
+      start: date,
+      end: date,
+      state: 'issued',
+    },
+    {
+      id: 2,
+      uuid: '123e4567-e89b-12d3-a456-426614174001',
+      membership: 2,
+      start: date,
+      end: date,
+      state: 'issued',
+    },
+    {
+      id: 3,
+      uuid: '123e4567-e89b-12d3-a456-426614174002',
+      membership: 3,
+      start: date,
+      end: date,
+      state: 'issued',
+    },
+  ],
+  memberships: [
+    {
+      id: 1,
+      uuid: '123e4567-e89b-12d3-a456-426614174000',
+      name: 'Platinum Plan',
+      userId: 2000,
+      recurringPrice: 150,
+      validFrom: date,
+      validUntil: date,
+      state: 'active',
+      assignedBy: 'Admin',
+      paymentMethod: 'credit card',
+      billingInterval: 'monthly',
+      billingPeriods: 12,
+    },
+    {
+      id: 2,
+      uuid: '123e4567-e89b-12d3-a456-426614174001',
+      name: 'Gold Plan',
+      userId: 2000,
+      recurringPrice: 100,
+      validFrom: date,
+      validUntil: date,
+      state: 'active',
+      assignedBy: 'Admin',
+      paymentMethod: 'cash',
+      billingInterval: 'monthly',
+      billingPeriods: 2,
+    },
+    {
+      id: 3,
+      uuid: '123e4567-e89b-12d3-a456-426614174002',
+      name: 'Gold Plan',
+      userId: 2000,
+      recurringPrice: 100,
+      validFrom: '2023-02-01',
+      validUntil: '2023-12-31',
+      state: 'active',
+      assignedBy: 'Admin',
+      paymentMethod: null,
+      billingInterval: 'monthly',
+      billingPeriods: 6,
+    },
+  ],
+  roles: [
+    {
+      id: 1,
+      uuid: '666e4567-e89b-12d3-a456-426614174111',
+      name: 'Admin',
+      description: 'Administrator with full access',
+    },
+  ],
+  users: [
+    {
+      id: 2000,
+      uuid: '666e4567-e89b-12d3-a456-426614174000',
+      name: 'Admin',
+      username: 'admin',
+      email: 'admin@test.com',
+      firstName: 'Nihad',
+      lastName: 'Obarcanin',
+      roleId: 1,
+    },
+  ],
+  membershipTypes: [
+    {
+      id: 1,
+      uuid: '777e4567-e89b-12d3-a456-426614174000',
+      name: 'Platinum Plan',
+    },
+    {
+      id: 2,
+      uuid: '777e4567-e89b-12d3-a456-426614174111',
+      name: 'Gold Plan',
+    },
+  ],
+};

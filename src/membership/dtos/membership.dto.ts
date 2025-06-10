@@ -1,8 +1,8 @@
 import { Expose, Transform } from 'class-transformer';
-import { MembershipState } from '../types/membership-state.enum';
-import { BillingInterval } from '../types/billing-interval.enum';
-import { TransformDate } from 'src/core/decorators/transform-date.decorator';
-import { PaymentMethod } from '../types/payment-method.enum';
+import { MembershipState } from '../enums/membership-state.enum';
+import { BillingInterval } from '../enums/billing-interval.enum';
+import { TransformDate } from '@app/core/decorators/transform-date.decorator';
+import { PaymentMethod } from '../enums/payment-method.enum';
 
 /**
  * Represents a membership.

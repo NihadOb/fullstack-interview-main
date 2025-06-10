@@ -92,5 +92,17 @@
       "updatedAt": "2023-02-01",
       "roleId": 1
     }
+  ],
+  "membershipTypes":[
+    {
+       "id": 1,
+      "uuid": "777e4567-e89b-12d3-a456-426614174000",
+      "name": "Platinum Plan"
+    },
+    {
+      "id": 2,
+      "uuid": "777e4567-e89b-12d3-a456-426614174111",
+      "name": "Gold Plan"
+    }
   ]
 }

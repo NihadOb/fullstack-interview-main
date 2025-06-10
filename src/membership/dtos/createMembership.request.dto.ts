@@ -9,8 +9,8 @@ import {
   Min,
   Validate,
 } from 'class-validator';
-import { BillingInterval } from '../types/billing-interval.enum';
-import { PaymentMethod } from '../types/payment-method.enum';
+import { BillingInterval } from '../enums/billing-interval.enum';
+import { PaymentMethod } from '../enums/payment-method.enum';
 import { Type } from 'class-transformer';
 import {
   INVALID_BILLING_PERIODS,

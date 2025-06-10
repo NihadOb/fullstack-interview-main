@@ -1,7 +1,7 @@
-import { DataProvider } from 'src/core/database/data-provider.interface';
-import { BaseRepository } from 'src/core/database/base.repository';
+import { DataProvider } from '@app/core/database/data-provider.interface';
+import { BaseRepository } from '@app/core/database/base.repository';
 import { Inject, Injectable } from '@nestjs/common';
-import { DATA_PROVIDER_TOKEN } from 'src/core/constants/tokens';
+import { DATA_PROVIDER_TOKEN } from '@app/core/constants/tokens';
 import { MembershipPeriod } from '../entities/membership-period.interface';
 
 @Injectable()

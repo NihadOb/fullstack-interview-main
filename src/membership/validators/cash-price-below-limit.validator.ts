@@ -3,7 +3,7 @@ import {
   ValidationOptions,
   ValidationArguments,
 } from 'class-validator';
-import { PaymentMethod } from '../types/payment-method.enum';
+import { PaymentMethod } from '../enums/payment-method.enum';
 import { CASH_PRICE_BELOW_100 } from '../consts/error-messages.const';
 
 export function CashPriceBelowLimit(validationOptions?: ValidationOptions) {

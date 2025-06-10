@@ -13,7 +13,7 @@ import {
   GetAllMembershipsResponseDto,
 } from '../dtos';
 import { MembershipService } from '../services';
-import { toDtos, toDto } from 'src/core/helpers/transform.helper';
+import { toDtos, toDto } from '@app/core/helpers/transform.helper';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,

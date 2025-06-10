@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { PostgresDataProvider } from './providers/postgres-data.provider';
 import { JsonDataProvider } from './providers/json-data.provider';
 import { CustomLoggerService } from '../logger/custom-logger.service';
+import { MemoryDataProvider } from './providers/memory-data.provider';
 
 export const dataSourceFactory: FactoryProvider<DataProvider> = {
   provide: DATA_PROVIDER_TOKEN,
@@ -25,6 +26,10 @@ export const dataSourceFactory: FactoryProvider<DataProvider> = {
       case 'postgres': {
         logger.log('Initializing PostgreSQL Data Provider...');
         return new PostgresDataProvider(logger /* , typeOrmDataSource */);
+      }
+      case 'memory': {
+        logger.log('Initializing Memory Data Provider...');
+        return new MemoryDataProvider(logger);
       }
       case 'mysql':
       case 'sqlite': {

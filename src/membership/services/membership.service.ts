@@ -5,8 +5,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { MembershipPeriodRepository } from '../repositories/membership-period.repository';
 import { MembershipPeriod } from '../entities/membership-period.interface';
 import { MembershipHelperService } from './membership-helper.service';
-import { CustomLoggerService } from 'src/core/logger/custom-logger.service';
-import { MembershipPeriodState } from '../types/membership-period-state.enum';
+import { CustomLoggerService } from '@app/core/logger/custom-logger.service';
+import { MembershipPeriodState } from '../enums/membership-period-state.enum';
 import { CreateMembershipRequestDto } from '../dtos';
 import { MembershipTypeRepository } from '../repositories/membership-type.repository';
 
@@ -81,7 +81,6 @@ export class MembershipService {
       const savedMembership = await this.membershipRepository.create(
         newMembershipToInsert,
       );
-      console.log('Saved', savedMembership);
       newMembershipPeriodsToInsert.forEach(
         (_) => (_.membership = savedMembership.id),
       );

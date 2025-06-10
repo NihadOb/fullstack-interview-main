@@ -1,7 +1,11 @@
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe, VersioningType } from '@nestjs/common';
+import {
+  ValidationPipe,
+  VERSION_NEUTRAL,
+  VersioningType,
+} from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { CustomLoggerService } from './core/logger/custom-logger.service';
 import { GlobalExceptionFilter } from './core/filters/gloabl-exception.filter';
@@ -21,7 +25,7 @@ async function bootstrap() {
   );
   app.enableVersioning({
     type: VersioningType.URI,
-    defaultVersion: VERSION_METADATA,
+    defaultVersion: VERSION_NEUTRAL,
   });
   const logger = app.get(CustomLoggerService);
   logger.setContext('Bootstrap');

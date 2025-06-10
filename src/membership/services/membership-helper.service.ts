@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { MembershipState } from '../types/membership-state.enum';
+import { MembershipState } from '../enums/membership-state.enum';
 
 @Injectable()
 export class MembershipHelperService {
