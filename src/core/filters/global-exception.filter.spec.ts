@@ -1,7 +1,6 @@
 import { ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { GlobalExceptionFilter } from './gloabl-exception.filter';
-import ErrorResponseDto from '../dtos/error-response.dto';
 
 describe('GlobalExceptionFilter', () => {
   let filter: GlobalExceptionFilter;

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Membership } from '../entities/membership.interface';
 import { MembershipRepository } from '../repositories/membership.repository';
 import { v4 as uuidv4 } from 'uuid';
@@ -9,6 +9,12 @@ import { CustomLoggerService } from '@app/core/logger/custom-logger.service';
 import { MembershipPeriodState } from '../enums/membership-period-state.enum';
 import { CreateMembershipRequestDto } from '../dtos';
 import { MembershipTypeRepository } from '../repositories/membership-type.repository';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
+import { MEMBERSHIP_EXPORT_QUEUE_V1 } from '@app/core/constants/queues';
+import { UserService } from '@app/user/services/user.service';
+import { MembershipExportData } from '@app/membership/processors/export-membership/membership-export.processor';
+import { JobStatusService } from '@app/core/jobs/services/job-status.service';
 
 export interface CreateMembershipResult {
   membership: Membership;
@@ -28,6 +34,10 @@ export class MembershipService {
     private readonly membershipTypeRepository: MembershipTypeRepository,
     private readonly membershipHelperService: MembershipHelperService,
     private readonly logger: CustomLoggerService,
+    private readonly userService: UserService,
+    private readonly jobStatusService: JobStatusService,
+    @InjectQueue(MEMBERSHIP_EXPORT_QUEUE_V1)
+    private readonly membershipExportQueue: Queue,
   ) {}
 
   /**
@@ -159,6 +169,32 @@ export class MembershipService {
       periodStart = validUntil;
     }
     return membershipPeriods;
+  }
+
+  /**
+   * Export Job Id
+   * @param userId User Id
+   * @returns
+   */
+  async export(userId: number): Promise<string> {
+    const userResponse = await this.userService.getUserById(userId);
+    if (!userResponse) throw new BadRequestException('Invalid user id');
+    //Todo Run in transaction
+    const dbJob = await this.jobStatusService.create({
+      userId,
+      state: 'pending',
+    });
+    const data: MembershipExportData = {
+      dbJobId: dbJob.id,
+      userId: userId,
+      email: userResponse.user.email,
+      ver: 1,
+    };
+    const job = await this.membershipExportQueue.add(data);
+
+    //Todo add jobId and state into db so we can query state if needed, set state to Pending
+    console.log('Export Job added', job.id);
+    return dbJob.uuid;
   }
 
   /**

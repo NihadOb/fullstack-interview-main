@@ -1,4 +1,4 @@
-import { Expose, Transform } from 'class-transformer';
+import { Expose } from 'class-transformer';
 import { MembershipState } from '../enums/membership-state.enum';
 import { BillingInterval } from '../enums/billing-interval.enum';
 import { TransformDate } from '@app/core/decorators/transform-date.decorator';

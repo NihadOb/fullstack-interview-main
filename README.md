@@ -1,30 +1,47 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Task 1 - Modernization of the membership codebase (backend only)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Before your team can start to implement new features, you guys decided to **modernize the backend codebase** first.
 
-## Description
+Your task is to **refactor two endpoints** implemented in the **legacy codebase** that can be used to list and create memberships:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+GET /legacy/memberships (`src/legacy/routes/membership.routes.js`)
+POST /legacy/memberships (`src/legacy/routes/membership.routes.js`)
+
+Your new implementation should be accessible through new endpoints in the **modern codebase** that are already prepared:
+
+GET /memberships (`src/modern/routes/membership.routes.ts`)
+POST /memberships (`src/modern/routes/membership.routes.ts`)
+
+When refactoring, you should consider the following aspects:
+
+- The response from the endpoints should be exactly the same. Use the same error messages that are used in the legacy implementation.
+- You write read- and maintainable code
+- You use Typescript instead of Javascript to enabled type safety
+- Your code is separated based on concerns
+- Your code is covered by automated tests to ensure the stability of the application
+
+> [!NOTE]
+> For the scope of this task, the data used is mocked within the json files `membership.json` and `membership-periods.json`
+
+> [!NOTE]
+> We provided you with an clean express.js server to run the example. For your implementations, feel free to use any library out there to help you with your solution. If you decide to choose another JavaScript/TypeScript http library/framework (eg. NestJs) update the run config described below if needed, and ensure that the routes of the described actions don't change.
+
+
+## Task 2 - Design an architecture to provide a membership export (conception only)
+
+The team discovered that users are interested in **exporting all of their memberships** from the system to run their own analysis once a month as a **CSV file**. Because the creation of the export file would take some seconds, the team decided to go for an **asynchronous process** for creating the file and sending it via email. The process will be triggered by an API call of the user. 
+
+Your task is to **map out a diagram** that visualizes the asynchronous process from receiving the request to sending the export file to the user. This diagram should include all software / infrastructure components that will be needed to make the process as stable and scalable as possible. 
+
+Because the team has other things to work on too, this task is timeboxed to **1 hour** and you should share the architecture diagram as a **PDF file**.
+
+> [!NOTE]
+> Feel free to use any tool out there to create your diagram. If you are not familiar with such a tool, you can use www.draw.io. 
+
+## Prerequisites for Production
+1. Redis, it should be bound to localhost on port 6379
+ `$ docker run --name redis-task -d redis`
 
 ## Project setup
 

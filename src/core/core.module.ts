@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from './logger/logger.module';
 import { GlobalExceptionFilter } from './filters/gloabl-exception.filter';
 import { APP_FILTER } from '@nestjs/core';
+import { JobsModule } from './jobs/jobs.module';
 
 @Global()
 @Module({
@@ -13,6 +14,7 @@ import { APP_FILTER } from '@nestjs/core';
       isGlobal: true,
     }),
     LoggerModule,
+    JobsModule,
   ],
   providers: [
     {
@@ -20,6 +22,6 @@ import { APP_FILTER } from '@nestjs/core';
       useClass: GlobalExceptionFilter,
     },
   ],
-  exports: [DatabaseModule, ConfigModule, LoggerModule],
+  exports: [DatabaseModule, ConfigModule, LoggerModule, JobsModule],
 })
 export class CoreModule {}

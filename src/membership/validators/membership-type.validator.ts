@@ -12,10 +12,12 @@ import { MISSING_MANDATORY_FIELDS } from '../consts/error-messages.const';
 export class MembershipTypeValidator implements ValidatorConstraintInterface {
   constructor(private readonly membershipService: MembershipService) {}
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async validate(value: any, args: ValidationArguments): Promise<boolean> {
     return await this.membershipService.isValidMembershipType(value);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   defaultMessage(args: ValidationArguments): string {
     return MISSING_MANDATORY_FIELDS;
   }

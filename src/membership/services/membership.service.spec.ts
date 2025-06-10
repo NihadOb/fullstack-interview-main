@@ -7,6 +7,7 @@ import { CustomLoggerService } from '@app/core/logger/custom-logger.service';
 import { CreateMembershipRequestDto } from '../dtos';
 import { MembershipPeriodState } from '../enums/membership-period-state.enum';
 import { MembershipState } from '../enums/membership-state.enum';
+import { BadRequestException } from '@nestjs/common';
 
 jest.mock('uuid', () => ({ v4: () => 'mock-uuid' }));
 
@@ -17,6 +18,9 @@ describe('MembershipService', () => {
   let membershipTypeRepository: jest.Mocked<MembershipTypeRepository>;
   let helper: jest.Mocked<MembershipHelperService>;
   let logger: jest.Mocked<CustomLoggerService>;
+  let userService: any;
+  let jobStatusService: any;
+  let membershipExportQueue: any;
 
   beforeEach(() => {
     membershipRepository = {
@@ -44,12 +48,27 @@ describe('MembershipService', () => {
       error: jest.fn(),
     } as any;
 
+    userService = {
+      getUserById: jest.fn(),
+    };
+
+    jobStatusService = {
+      create: jest.fn(),
+    };
+
+    membershipExportQueue = {
+      add: jest.fn(),
+    };
+
     service = new MembershipService(
       membershipRepository,
       membershipPeriodRepository,
       membershipTypeRepository,
       helper,
       logger,
+      userService,
+      jobStatusService,
+      membershipExportQueue,
     );
   });
 
@@ -120,7 +139,7 @@ describe('MembershipService', () => {
         expect.objectContaining({
           name: 'Gold',
           user: 2000,
-          state: 'active',
+          state: MembershipState.Active,
         }),
       );
       expect(membershipPeriodRepository.createMany).toHaveBeenCalled();
@@ -162,7 +181,7 @@ describe('MembershipService', () => {
       expect(result).toMatchObject({
         name: 'Gold',
         user: 42,
-        state: 'active',
+        state: MembershipState.Active,
         validFrom: new Date('2024-01-01'),
         validUntil: new Date('2024-02-01'),
         uuid: 'mock-uuid',
@@ -215,6 +234,36 @@ describe('MembershipService', () => {
       ]);
       const result = await service.isValidMembershipType('Gold');
       expect(result).toBe(false);
+    });
+  });
+
+  describe('export', () => {
+    it('should throw BadRequestException if user not found', async () => {
+      userService.getUserById.mockResolvedValue(null);
+      await expect(service.export(123)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should create job and add to queue, returning dbJob.uuid', async () => {
+      userService.getUserById.mockResolvedValue({
+        user: { email: 'test@mail.com' },
+      });
+      jobStatusService.create.mockResolvedValue({ id: 1, uuid: 'job-uuid' });
+      membershipExportQueue.add.mockResolvedValue({ id: 99 });
+
+      const result = await service.export(123);
+
+      expect(userService.getUserById).toHaveBeenCalledWith(123);
+      expect(jobStatusService.create).toHaveBeenCalledWith({
+        userId: 123,
+        state: 'pending',
+      });
+      expect(membershipExportQueue.add).toHaveBeenCalledWith({
+        dbJobId: 1,
+        userId: 123,
+        email: 'test@mail.com',
+        ver: 1,
+      });
+      expect(result).toBe('job-uuid');
     });
   });
 });

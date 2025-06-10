@@ -10,20 +10,13 @@ import request from 'supertest';
 import { AppModule } from '@app/app.module';
 import { useContainer } from 'class-validator';
 import { DATA_PROVIDER_TOKEN } from '@app/core/constants/tokens';
-import {
-  MemoryDataProvider,
-  MemoryDb,
-} from '@app/core/database/providers/memory-data.provider';
-import User from '@app/user/entities/user.interface';
-import Role from '@app/user/entities/role.interface';
+import { MemoryDataProvider } from '@app/core/database/providers/memory-data.provider';
 import {
   CreateMembershipRequestDto,
   CreateMembershipResponseDto,
-  GetAllMembershipsResponseDataItemDto,
   GetAllMembershipsResponseDto,
 } from '@app/membership/dtos';
 import { BillingInterval } from '@app/membership/enums/billing-interval.enum';
-import ErrorResponseDto from '@app/core/dtos/error-response.dto';
 import { PaymentMethod } from '@app/membership/enums/payment-method.enum';
 import { data } from './membership.data';
 

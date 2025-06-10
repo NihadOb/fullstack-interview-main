@@ -1,6 +1,5 @@
 import { MembershipTypeRepository } from './membership-type.repository';
 import { DataProvider } from '@app/core/database/data-provider.interface';
-import { MembershipType } from '../entities/membership-type.interface';
 
 describe('MembershipTypeRepository', () => {
   let repo: MembershipTypeRepository;

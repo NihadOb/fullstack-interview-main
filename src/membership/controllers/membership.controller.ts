@@ -21,6 +21,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import ErrorResponseDto from '../../core/dtos/error-response.dto';
+import { ExportResponseDto } from '../dtos/export.response.dto';
 
 @ApiTags('Membership')
 @Controller({
@@ -112,5 +113,20 @@ export class MembershipController {
     );
 
     return toDto(CreateMembershipResponseDto, createMembershipResult);
+  }
+
+  /**
+   * Schedule membership job
+   * @returns Job Id
+   */
+  @ApiOkResponse({
+    type: ExportResponseDto,
+    description: 'Schedule job for sending email with membership info CSV',
+  })
+  @Version('1')
+  @Get('export')
+  async export(): Promise<ExportResponseDto> {
+    const jobId = await this.membershipService.export(this.userId);
+    return new ExportResponseDto(jobId);
   }
 }
